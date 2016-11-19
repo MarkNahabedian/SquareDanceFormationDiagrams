@@ -1,0 +1,118 @@
+<html>
+  <head>
+    <title>Demo: Drawing Square dance Formations on Web Pages</title>
+    <style type="text/css">
+      div.example {
+      }
+      div.name {
+        dislay: block;
+        text-align: center;
+        font-size: large;
+        font-weight: bold;
+      }
+      div.example pre {
+        display: inline-block;
+        vertical-align: top;
+        width: 50%;
+        margin-top: 0.2in;
+      }
+      div.example svg {
+      display: inline-block;
+        vertical-align: center;
+        padding: auto;
+        border-width: 5px;
+        border-color: black;
+        margin: 5px;
+      }
+    </style>
+    <script type="text/javascript"
+            src="dancers.js"></script>
+    <script type="text/javascript">
+<!--
+function draw() {
+  document.querySelectorAll("pre.draw").forEach(function(e) {
+    eval(e.textContent);
+  });
+};
+
+document.addEventListener("DOMContentLoaded", draw, false);
+
+-->
+    </script>
+  </head>
+  <body>
+
+    <p>
+      dancers.js os a small JavaScript library for drawing square
+      dance formaqtions in a web browser.
+
+      Each dancer is represented by a <tt>Dancer</tt> object.  A
+      dancer is located bt an <b>X</b> and a <b>y</b> coordinate
+      expressed in the <b>dancer coordinate system</b>.  The dancer
+      coordinate system is scalled such that dancers who are either
+      next to or facing each other have distance 1.  Each dancer also
+      has a <b>facing direction</b>.  A facing direction of <tt>0</tt>
+      has the dancer's back towards the caller (like couble #1 in a
+      squared set).  Each increase by <tt>1</tt> in facimng direction
+      rotates the dancer by one wall to their left, so a facing
+      direction of <tt>1</tt> would have the dqancer facing the same
+      wall as couple #2 in a squared set.  Fractional coordinates and
+      directions are allowed.
+    </p>
+
+    <p>
+      The cancers are arranged on a dance floor by placing t hem in
+      a <tt>Floor</tt> object.  Each Floor object is associated with
+      an initially empty svg element on the web page.  Graphical
+      representations of the dancers will be added to that svg element
+      when the web page is finished loading.
+    </p>
+
+    <div class="example">
+      <div class="name">Squared Set</div>
+      <div>
+	<pre class="draw">
+new Floor("squared-set", [
+    new Dancer(3, 1, 0, "1", Dancer.gender.GUY),
+    new Dancer(2, 1, 0, "1", Dancer.gender.GAL),
+    new Dancer(1, 2, 1, "2", Dancer.gender.GUY),
+    new Dancer(1, 3, 1, "2", Dancer.gender.GAL),
+    new Dancer(2, 4, 2, "3", Dancer.gender.GUY),
+    new Dancer(3, 4, 2, "3", Dancer.gender.GAL),
+    new Dancer(4, 3, 3, "4", Dancer.gender.GUY),
+    new Dancer(4, 2, 3, "4", Dancer.gender.GAL)
+  ]);
+	</pre>
+	<svg id="squared-set"></svg>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="name">Normal Couple</div>
+      <div>
+        <pre class="draw">
+new Floor("normal-couple", [
+      new Dancer(1, 1, 2, "1", Dancer.gender.GUY),
+      new Dancer(2, 1, 2, "1", Dancer.gender.GAL)
+  ]);
+        </pre>
+        <svg id="normal-couple"></svg>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="name">Halfsasheyed Couple</div>
+      <div>
+        <pre class="draw">
+  new Floor("halfsasheyed-couple", [
+      new Dancer(2, 1, 2, "1", Dancer.gender.GUY),
+      new Dancer(1, 1, 2, "1", Dancer.gender.GAL)
+    ]);
+        </pre>
+        <svg id="halfsasheyed-couple"></svg>
+      </div>
+    </div>
+
+  </body>
+</html>
+

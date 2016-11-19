@@ -44,10 +44,10 @@ function Floor(svg_id, dancers) {
   // Setting up for drawing:
   var xs = this.dancers.map(function(d) { return d.x; });
   var ys = this.dancers.map(function(d) { return d.y; });
-  var min_x = Math.min(xs);
-  var max_x = Math.max(xs);
-  var min_y = Math.min(ys);
-  var max_y = Math.max(ys);
+  var min_x = Math.min.apply(null, xs);
+  var max_x = Math.max.apply(null, xs);
+  var min_y = Math.min.apply(null, ys);
+  var max_y = Math.max.apply(null, ys);
   this.svg_element = document.getElementById(this.svg_id);
   if (!this.svg_element) {
     console.log("No svg element with id " + this.svg_id);
@@ -66,6 +66,10 @@ function Floor(svg_id, dancers) {
   console.log("space available for a dancer: " + available);
 
   var put_dancers_here = document.createElementNS(svg_uri, "g");
+  var translate = "translate("
+  	+ (width / 2 - dancers_wide * this.dancer_spacing / 2) + ", "
+  	+ (height / 2 - dancers_high * this.dancer_spacing / 2) + ")";
+  put_dancers_here.setAttribute("transform", translate);
   this.svg_element.appendChild(put_dancers_here);
   this.dancers.map(function(d) {
       put_dancers_here.appendChild(d.svg());
