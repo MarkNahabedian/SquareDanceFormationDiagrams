@@ -1,0 +1,50 @@
+
+<html>
+  <head>
+    <title>Square dance formations test file</title>
+    <script type="text/javascript"
+            src="dancers.js"></script>
+    <script type="text/javascript">
+<!--
+
+console.log('running svript');
+
+function draw_dancers() {
+  console.log("draw dancers");
+  var floor1 = new Floor("floor1", [
+      new Dancer(1, 1, 0, "a", Dancer.gender.GUY),
+      new Dancer(2, 1, 1, "b", Dancer.gender.NEU),
+      new Dancer(3, 1, 2, "c", Dancer.gender.GUY),
+      new Dancer(4, 1, 3, "d", Dancer.gender.GAL),
+  ]);
+
+  /*
+  dancer("a", "wave", 1, 1,  90, "guy", "white");
+  dancer("b", "wave", 2, 1, 270, "gal", "white");
+  dancer("c", "wave", 3, 1,  90, "guy", "white");
+  dancer("d", "wave", 4, 1, 270, "gal", "white");
+  */
+};
+
+//-->
+    </script>
+  </head>
+  <body onload="draw_dancers()">
+
+    <p>
+      Test of JavaScript svg generation for square dance formations.
+    </p>
+    <table border="1">
+      <tr>
+	<td>
+	  <svg id="floor1"
+               xmlns="http://www.w3.org/2000/svg"
+               width="300"
+               height="300">
+	  </svg>
+	</td>
+      </tr>
+    </table>
+  </body>
+</html>
+
