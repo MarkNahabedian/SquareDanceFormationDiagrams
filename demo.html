@@ -47,17 +47,19 @@ document.addEventListener("DOMContentLoaded", draw, false);
       dance formaqtions in a web browser.
 
       Each dancer is represented by a <tt>Dancer</tt> object.  A
-      dancer is located bt an <b>X</b> and a <b>y</b> coordinate
+      dancer is located by an <b>X</b> and a <b>Y</b> coordinate
       expressed in the <b>dancer coordinate system</b>.  The dancer
       coordinate system is scalled such that dancers who are either
-      next to or facing each other have distance 1.  Each dancer also
-      has a <b>facing direction</b>.  A facing direction of <tt>0</tt>
-      has the dancer's back towards the caller (like couble #1 in a
-      squared set).  Each increase by <tt>1</tt> in facimng direction
-      rotates the dancer by one wall to their left, so a facing
-      direction of <tt>1</tt> would have the dqancer facing the same
-      wall as couple #2 in a squared set.  Fractional coordinates and
-      directions are allowed.
+      next to or facing each other have distance 1.  X coordinates
+      ascend to the right.  Y coordinates ascend downwards.
+
+      Each dancer also has a <b>facing direction</b>.  A facing
+      direction of <tt>0</tt> has the dancer's back towards the caller
+      (like couple #1 in a squared set).  Each increase by <tt>1</tt>
+      in facimng direction rotates the dancer by one wall to their
+      left, so a facing direction of <tt>1</tt> would have the dancer
+      facing the same wall as couple #2 in a squared set.  Fractional
+      coordinates and directions are allowed.
     </p>
 
     <p>
@@ -72,7 +74,7 @@ document.addEventListener("DOMContentLoaded", draw, false);
       <div class="name">Squared Set</div>
       <div>
 	<pre class="draw">
-new Floor("squared-set", [
+new Floor([
     new Dancer(3, 1, 0, "1", Dancer.gender.GUY),
     new Dancer(2, 1, 0, "1", Dancer.gender.GAL),
     new Dancer(1, 2, 1, "2", Dancer.gender.GUY),
@@ -81,7 +83,7 @@ new Floor("squared-set", [
     new Dancer(3, 4, 2, "3", Dancer.gender.GAL),
     new Dancer(4, 3, 3, "4", Dancer.gender.GUY),
     new Dancer(4, 2, 3, "4", Dancer.gender.GAL)
-  ]);
+  ]).draw("squared-set");
 	</pre>
 	<svg id="squared-set"></svg>
       </div>
@@ -91,10 +93,10 @@ new Floor("squared-set", [
       <div class="name">Normal Couple</div>
       <div>
         <pre class="draw">
-new Floor("normal-couple", [
+new Floor([
       new Dancer(1, 1, 2, "1", Dancer.gender.GUY),
       new Dancer(2, 1, 2, "1", Dancer.gender.GAL)
-  ]);
+  ]).draw("normal-couple");
         </pre>
         <svg id="normal-couple"></svg>
       </div>
@@ -104,14 +106,75 @@ new Floor("normal-couple", [
       <div class="name">Halfsasheyed Couple</div>
       <div>
         <pre class="draw">
-  new Floor("halfsasheyed-couple", [
+  new Floor([
       new Dancer(2, 1, 2, "1", Dancer.gender.GUY),
       new Dancer(1, 1, 2, "1", Dancer.gender.GAL)
-    ]);
+    ]).draw("halfsasheyed-couple");
         </pre>
         <svg id="halfsasheyed-couple"></svg>
       </div>
     </div>
+
+    <p>
+      For formations like dismonds, it might be cumbersome to deal
+      with fractional coordinates.  The <tt>rotate</tt> method
+      of <tt>Floor</tt> can be used to rotate any collection of
+      dancers around their collective center.  This might provide a
+      more convenient way to describe diamonds or hourglasses.
+    </p>
+
+    <div class="example">
+      <div class="name">Right Hand Diamond</div>
+      <div>
+        <pre class="draw">
+new Floor([
+  new Dancer(1, 1, 2, "1", Dancer.gender.NEU),
+  new Dancer(2, 1, 2, "2", Dancer.gender.NEU),
+  new Dancer(3, 1, 0, "3", Dancer.gender.NEU),
+  new Dancer(4, 1, 0, "4", Dancer.gender.NEU),
+]).rotate(-1, ["2", "3"])
+  .draw("rh-diamond");
+        </pre>
+        <svg id="rh-diamond"></svg>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="name">Right Hand Hourglass</div>
+      <div>
+        <pre class="draw">
+new Floor([
+  new Dancer(1, 1, 2, "1", Dancer.gender.NEU),
+  new Dancer(2, 1, 2, "2", Dancer.gender.NEU),
+  new Dancer(3, 1, 0, "3", Dancer.gender.NEU),
+  new Dancer(4, 1, 0, "4", Dancer.gender.NEU),
+  new Dancer(1, 3, 2, "5", Dancer.gender.NEU),
+  new Dancer(2, 3, 2, "6", Dancer.gender.NEU),
+  new Dancer(3, 3, 0, "7", Dancer.gender.NEU),
+  new Dancer(4, 3, 0, "8", Dancer.gender.NEU),
+  ]).rotate(-1, ["2", "3"])
+    .rotate(-1, ["6", "7"])
+    .rotate(1, ["3", "6"])
+    .draw("rh-hourglass");
+        </pre>
+        <svg id="rh-hourglass"></svg>
+      </div>
+    </div>
+
+
+<!--
+    <div class="example">
+      <div class="name">Template</div>
+      <div>
+        <pre class="draw">
+new Floor("template", [
+
+  ]);
+        </pre>
+        <svg id="template"></svg>
+      </div>
+    </div>
+-->
 
   </body>
 </html>
