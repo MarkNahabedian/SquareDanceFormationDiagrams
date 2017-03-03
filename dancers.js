@@ -35,6 +35,7 @@ function Floor(dancers) {
   this.neu_corner_fraction = 0.3;
   // Tell the dancers what floor they're on.
   var floor = this;
+  console.log("dancers " + this.dancers);
   this.dancers.map(function(d) { d.floor = floor; });
 };
 
@@ -237,4 +238,3 @@ Floor.prototype.rotate = function(angle, dancers) {
   dancers.map(function(d) { d.revolve(center_x, center_y, angle); });
   return this;
 };
-
