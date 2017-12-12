@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", draw, false);
     </p>
 
     <p>
-      The cancers are arranged on a dance floor by placing t hem in
+      The cancers are arranged on a dance floor by placing them in
       a <tt>Floor</tt> object.  Each Floor object is associated with
       an initially empty svg element on the web page.  Graphical
       representations of the dancers will be added to that svg element
@@ -116,7 +116,7 @@ new Floor([
     </div>
 
     <p>
-      For formations like dismonds, it might be cumbersome to deal
+      For formations like diamonds, it might be cumbersome to deal
       with fractional coordinates.  The <tt>rotate</tt> method
       of <tt>Floor</tt> can be used to rotate any collection of
       dancers around their collective center.  This might provide a
@@ -155,6 +155,8 @@ new Floor([
   ]).rotate(-1, ["2", "3"])
     .rotate(-1, ["6", "7"])
     .rotate(1, ["3", "6"])
+    .rotate(2, ["3"])
+    .rotate(2, ["6"])
     .draw("rh-hourglass");
         </pre>
         <svg id="rh-hourglass"></svg>
