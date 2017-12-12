@@ -108,6 +108,7 @@ Dancer.prototype.svg = function(floor_svg_id) {
   var g = document.createElementNS(svg_uri, "g");
   var dancer_id = floor_svg_id + ":" + this.label;
   g.setAttribute("ID", this.dancer_id);
+  var dancer_css_class = "";
   var rotate = "rotate(" + (180 - this.direction * 90) + ")";
   var translate = "translate("
   	+ (this.x * this.floor.dancer_spacing) + ", "
@@ -118,15 +119,18 @@ Dancer.prototype.svg = function(floor_svg_id) {
   switch (this.gender) {
     case Dancer.gender.GUY:
       dancer_shape = dancer_guy(this);
+      dancer_css_class += "guy ";
       break;
     case Dancer.gender.GAL:
       dancer_shape = dancer_gal(this);
+      dancer_css_class += "gal ";
       break;
     default:
       dancer_shape = dancer_neu(this);
   }
   dancer_shape.setAttribute("fill", this.color);
   dancer_shape.setAttribute("stroke", "black");
+  g.setAttribute("class", dancer_css_class);
   g.appendChild(dancer_shape);
   g.appendChild(nose(this));
 
