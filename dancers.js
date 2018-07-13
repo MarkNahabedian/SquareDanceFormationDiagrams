@@ -26,7 +26,12 @@ var xlink_uri = "http://www.w3.org/1999/xlink";
 function Floor(dancers) {
   // This particular floor
   this.dancers = dancers;
-  // Some defsault drawing parameters:
+  for (i = 0; i < this.dancers.length; i++) {
+    var dancer = this.dancers[i];
+    dancer.floor = this;
+    dancer.dancer_id = "" + (i + 1); 
+  }
+  // Some default drawing parameters:
   this.dancer_size = 20;
   // spacing between centers, not perimeters
   this.dancer_spacing = this.dancer_size * 1.3;
@@ -35,11 +40,12 @@ function Floor(dancers) {
   this.neu_corner_fraction = 0.3;
   // Tell the dancers what floor they're on.
   var floor = this;
-  console.log("dancers " + this.dancers);
-  this.dancers.map(function(d) { d.floor = floor; });
+  // svg_id is assigned by the Floor's draw() method.
+  this.svg_id = null;
 };
 
 Floor.prototype.draw = function(svg_id) {
+  this.svg_id = svg_id;
   // Setting up for drawing:
   var xs = this.dancers.map(function(d) { return d.x; });
   var ys = this.dancers.map(function(d) { return d.y; });
@@ -47,16 +53,16 @@ Floor.prototype.draw = function(svg_id) {
   var max_x = Math.max.apply(null, xs);
   var min_y = Math.min.apply(null, ys);
   var max_y = Math.max.apply(null, ys);
-  var svg_element = document.getElementById(svg_id);
+  var svg_element = document.getElementById(this.svg_id);
   if (!svg_element) {
-    console.log("No svg element with id " + svg_id);
+    console.log("No svg element with id " + this.svg_id);
     return;
   }
   // Add one to provide half a dancer of space at each border.
   var dancers_wide = 1 + max_x - min_x;
   var dancers_high = 1 + max_y - min_y;
   // Does the svg element already have dimensions?
-  console.log("For Floor " + svg_id + " the ideal aspect ratio (width/height) is " +
+  console.log("For Floor " + this.svg_id + " the ideal aspect ratio (width/height) is " +
 	      dancers_wide / dancers_high);
   var width = svg_element.clientWidth;
   var height = svg_element.clientHeight;
@@ -71,7 +77,7 @@ Floor.prototype.draw = function(svg_id) {
   put_dancers_here.setAttribute("transform", translate);
   svg_element.appendChild(put_dancers_here);
   this.dancers.map(function(d) {
-      put_dancers_here.appendChild(d.svg(svg_id));
+      put_dancers_here.appendChild(d.svg());
   });
   return this;
 };
@@ -87,12 +93,15 @@ Floor.prototype.getDancer = function(label) {
 
 // Makes a Dancer.  x and y are floor positions, typically numbers from 1 to 8.
 function Dancer(x, y, direction, label, gender, color) {
+  // dancer_id is assigned by the Floor constructor.
+  this.dancer_id = null;
   this.x = x;
   this.y = y;
   this.direction = direction;
   this.label = label || "";
   this.gender = gender || Dancer.gender.NEU;
   this.color = color || "white";
+  // floor is assigned by the Floor constructor.
   this.floor = null;
 };
 
@@ -102,12 +111,28 @@ Dancer.gender = {
     NEU: "unspecified"
 };
 
+// Returns a unique value appropriate for use as an HTML ID attribute.
+Dancer.prototype.id = function() {
+  if (!this.floor) {
+    throw new Error("Dancer.id: Dancer.floor not set.");
+  }
+  if (!this.floor.svg_id) {
+    throw new Error("Dancer.id called before floor is drawn.");
+  }
+  return this.floor.svg_id + ":" + this.dancer_id;
+};
+
 // Builds an svg:g element for a Dancer and returns it.  It's up to the
 // caller to add it to the DOM tree.
-Dancer.prototype.svg = function(floor_svg_id) {
+Dancer.prototype.svg = function() {
+  if (!(this.floor)) {
+    throw new Error("Dancer.svg: Dancer.floor not set.");
+  }
+  if (!(this.floor.svg_id)) {
+    throw new Error("Dancer.svg: floor.svg_id not set.")
+  }
   var g = document.createElementNS(svg_uri, "g");
-  var dancer_id = floor_svg_id + ":" + this.label;
-  g.setAttribute("ID", this.dancer_id);
+  g.setAttribute("ID", this.id());
   var dancer_css_class = "";
   var rotate = "rotate(" + (180 - this.direction * 90) + ")";
   var translate = "translate("
