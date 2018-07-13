@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <!-- Symbols are intended to be drawn in a 20x20 area.  -->
+  <symbol id="Guy"
+          viewBox="0 0 20 20"
+          preserveAspectRatio="xMidYMid"
+          overflow="visible">
+    <g transform="translate(-8, -8)">
+      <rect width="16" height="16" x="0" y="0"
+            fill="white" stroke="black"></rect>
+      <circle r="2" cx="8" cy="0" stroke="none" fill="black"></circle>
+    </g>
+  </symbol>
+  <symbol id="Gal"
+          viewBox="0 0 20 20"
+          preserveAspectRatio="xMidYMid"
+          overflow="visible">
+    <circle r="8" cx="0" cy="0"
+            fill="white" stroke="black"></circle>
+    <circle r="2" cx="0" cy="-8" stroke="none" fill="black"></circle>
+  </symbol>
+  <symbol id="Neutral"
+          viewBox="0 0 20 20"
+          preserveAspectRatio="xMidYMid"
+          overflow="visible">
+    <g transform="translate(-8, -8)">
+      <rect width="16" height="16"
+            x="0" y="0"
+            rx="3" ry="3"
+            fill="white"
+            stroke="black" ></rect>
+      <circle r="2" cx="8" cy="0" stroke="none" fill="black"></circle>
+    </g>
+  </symbol>
+  <!-- Usage examples
+  <g transform="translate(200, 200)">
+    <g>
+      <path d="M -200 0 L 200 0" stroke="black"/>
+      <path d="M 0 -200 L 0 200" stroke="black"/>
+      <g transform="rotate(180)" class="">
+        <use href="#Gal" x="0" y="0" width="20" height="20"/>
+      </g>
+      <g transform="rotate(-90) translate(20, 0)" class="">
+        <use href="#Neutral" x="0" y="0" width="20" height="20"/>
+      </g>
+      <g transform="rotate(0) translate(20, 0)" class="">
+        <use href="#Guy" x="0" y="0" width="20" height="20"/>
+      </g>>
+    </g>
+  </g>
+  -->
+</svg>
