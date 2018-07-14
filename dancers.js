@@ -165,6 +165,8 @@ Dancer.prototype.svg = function() {
   g.appendChild(dancer_shape);
 
   var label = document.createElementNS(svg_uri, "text");
+  label.setAttribute("x", "0")
+  label.setAttribute("y", "6")
   label.setAttribute("text-anchor", "middle");
   label.setAttribute("alignment-baseline", "middle");
   label.appendChild(document.createTextNode(this.label));
