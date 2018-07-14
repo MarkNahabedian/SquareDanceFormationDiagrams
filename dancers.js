@@ -4,6 +4,8 @@
 var svg_uri = "http://www.w3.org/2000/svg";
 var xlink_uri = "http://www.w3.org/1999/xlink";
 
+var dancer_symbols_base_uri = "dancer_symbols.svg"
+
 /*
 
   A note about coordinate systems:
@@ -140,24 +142,27 @@ Dancer.prototype.svg = function() {
   	+ (this.y * this.floor.dancer_spacing) + ")";
   var xform = translate + " " + rotate;
   g.setAttribute("transform", xform);
-  var dancer_shape;
+  var dancer_shape = document.createElementNS(svg_uri, "use");
+  dancer_shape.setAttribute('x', '0')
+  dancer_shape.setAttribute('y', '0')
+  dancer_shape.setAttribute('width', '20')
+  dancer_shape.setAttribute('height', '20')
   switch (this.gender) {
     case Dancer.gender.GUY:
-      dancer_shape = dancer_guy(this);
+      dancer_shape.setAttribute('href', dancer_symbols_base_uri + '#Guy');
       dancer_css_class += "guy ";
       break;
     case Dancer.gender.GAL:
-      dancer_shape = dancer_gal(this);
+      dancer_shape.setAttribute('href', dancer_symbols_base_uri + '#Gal');
       dancer_css_class += "gal ";
       break;
     default:
-      dancer_shape = dancer_neu(this);
+      dancer_shape.setAttribute('href', dancer_symbols_base_uri + '#Neutral');
   }
   dancer_shape.setAttribute("fill", this.color);
   dancer_shape.setAttribute("stroke", "black");
   g.setAttribute("class", dancer_css_class);
   g.appendChild(dancer_shape);
-  g.appendChild(nose(this));
 
   var label = document.createElementNS(svg_uri, "text");
   label.setAttribute("text-anchor", "middle");
@@ -168,70 +173,6 @@ Dancer.prototype.svg = function() {
   return g;
 };
 
-function nose(dancer) {
-    var nose = document.createElementNS(svg_uri, "circle");
-    nose.setAttribute("r", "" + dancer.floor.dancer_nose_radius);
-    nose.setAttribute("cx", "0");
-    nose.setAttribute("cy", "" + (- (dancer.floor.dancer_size / 2)));
-    nose.setAttribute("stroke", "none");
-    nose.setAttribute("fill", "black");
-    return nose;
-}
-
-// Returns a not yet positioned SVG group element to be added to some parent element
-function dancer_guy (dancer) {
-    var shape = document.createElementNS(svg_uri, "rect");
-    shape.setAttribute("width", "" + dancer.floor.dancer_size);
-    shape.setAttribute("height", "" + dancer.floor.dancer_size);
-    shape.setAttribute("x", "" + (- (dancer.floor.dancer_size / 2)));
-    shape.setAttribute("y", "" + (- (dancer.floor.dancer_size / 2)));
-    return shape;
-}
-
-// Returns a not yet positioned SVG group element to be added to some parent element
-function dancer_gal (dancer) {
-    var shape = document.createElementNS(svg_uri, "circle");
-    shape.setAttribute("r", "" + (dancer.floor.dancer_size / 2));
-    shape.setAttribute("cx", "0");
-    shape.setAttribute("cy", "0");
-    return shape;
-}
-
-// Returns a not yet positioned SVG group element to be added to some parent element
-function dancer_neu (dancer) {
-    var shape = document.createElementNS(svg_uri, "path");
-    // Identify the X and Y coordinates of the line and arc ends
-    var r = dancer.floor.neu_corner_fraction * dancer.floor.dancer_size;
-    var right = dancer.floor.dancer_size / 2;
-    var bottom = dancer.floor.dancer_size / 2;
-    var left = - dancer.floor.dancer_size / 2;
-    var top = - dancer.floor.dancer_size / 2;
-    var path = [
-	//  top left corner
-	"M", left, top + r,
-	"A", r, r, 0, 0, 1, left + r, top,
-	// top edge
-	"H", right - r,
-	// top right corner
-	"A", r, r, 0, 0, 1, right, top + r,
-	// right edge
-	"V", bottom - r,
-	// bottom right corner
-	"A", r, r, 0, 0, 1, right - r, bottom,
-	// bottom edge
-	"H", left + r,
-	// botton left corner
-	"A", r, r, 0, 0, 1, left, bottom - r,
-	// left edge
-	"Z"];
-    pathstr = "";
-    for (e in path) {
-	pathstr += path[e];
-	pathstr += " ";
-    }
-    shape.setAttribute("d", pathstr);
-    return shape;
-}
 
 // Reposition a Dancer by revolving it around some point by an angle.
 // The angle is expressed as a number of walls in promenade direction.
