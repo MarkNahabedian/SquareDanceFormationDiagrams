@@ -210,3 +210,75 @@ Floor.prototype.rotate = function(angle, dancers) {
   dancers.map(function(d) { d.revolve(center_x, center_y, angle); });
   return this;
 };
+
+
+// This is the old definition of Dancer.prototype.svg.  It is needed
+// for Chrome because of a stupid security policy that doesn't allow
+// svg elements to refer to external resources, even if they are from
+// a sibling path of the HTML file being displayed.
+broken_browser_security_policy_dancer_svg = function() {
+  if (!(this.floor)) {
+    throw new Error("Dancer.svg: Dancer.floor not set.");
+  }
+  if (!(this.floor.svg_id)) {
+    throw new Error("Dancer.svg: floor.svg_id not set.")
+  }
+  var g = document.createElementNS(svg_uri, "g");
+  g.setAttribute("ID", this.id);
+  var dancer_css_class = "";
+  var rotate = "rotate(" + (180 - this.direction * 90) + ")";
+  var translate = "translate("
+  	+ (this.x * this.floor.dancer_spacing) + ", "
+  	+ (this.y * this.floor.dancer_spacing) + ")";
+  var xform = translate + " " + rotate;
+  g.setAttribute("transform", xform);
+  var dancer_shape;
+  switch (this.gender) {
+    case Dancer.gender.GUY:
+      dancer_shape = document.createElementNS(svg_uri, "rect");
+      dancer_shape.setAttribute("width", "" + this.floor.dancer_size);
+      dancer_shape.setAttribute("height", "" + this.floor.dancer_size);
+      dancer_shape.setAttribute("x", "" + (- (this.floor.dancer_size / 2)));
+      dancer_shape.setAttribute("y", "" + (- (this.floor.dancer_size / 2)));
+      dancer_css_class += "guy ";
+      break;
+    case Dancer.gender.GAL:
+      dancer_shape = document.createElementNS(svg_uri, "circle");
+      dancer_shape.setAttribute("r", "" + (this.floor.dancer_size / 2));
+      dancer_shape.setAttribute("cx", "0");
+      dancer_shape.setAttribute("cy", "0");
+      dancer_css_class += "gal ";
+      break;
+    default:
+      dancer_shape = document.createElementNS(svg_uri, "rect");
+      dancer_shape.setAttribute("width", "" + this.floor.dancer_size);
+      dancer_shape.setAttribute("height", "" + this.floor.dancer_size);
+      dancer_shape.setAttribute("x", "" + (- (this.floor.dancer_size / 2)));
+      dancer_shape.setAttribute("y", "" + (- (this.floor.dancer_size / 2)));
+      dancer_shape.setAttribute("rx", "" + 3);
+      dancer_shape.setAttribute("ry", "" + 3);
+  }
+  dancer_shape.setAttribute("fill", this.color);
+  dancer_shape.setAttribute("stroke", "black");
+  g.setAttribute("class", dancer_css_class);
+  g.appendChild(dancer_shape);
+ var nose = document.createElementNS(svg_uri, "circle");
+  nose.setAttribute("r", "" + this.floor.dancer_nose_radius);
+  nose.setAttribute("cx", "0");
+  nose.setAttribute("cy", "" + (- (this.floor.dancer_size / 2)));
+  nose.setAttribute("stroke", "none");
+  nose.setAttribute("fill", "black");
+  g.appendChild(nose);
+  var label = document.createElementNS(svg_uri, "text");
+  label.setAttribute("text-anchor", "middle");
+  label.setAttribute("alignment-baseline", "middle");
+  label.appendChild(document.createTextNode(this.label));
+  g.appendChild(label);
+
+  return g;
+};
+
+if (navigator.userAgent.includes('Chrome')) {
+  Dancer.prototype.svg = broken_browser_security_policy_dancer_svg;
+}
+
