@@ -2,6 +2,10 @@
   <head>
     <title>Demo: Drawing Square dance Formations on Web Pages</title>
     <style type="text/css">
+      body {
+        color: white;
+        background-color: black;
+      }
       div.example {
       }
       div.name {
@@ -21,7 +25,7 @@
         vertical-align: center;
         padding: auto;
         border-width: 5px;
-        border-color: black;
+        border-color: yellow;
         margin: 5px;
       }
     </style>
@@ -43,7 +47,7 @@ document.addEventListener("DOMContentLoaded", draw, false);
   <body>
 
     <p>
-      dancers.js os a small JavaScript library for drawing square
+      dancers.js is a small JavaScript library for drawing square
       dance formaqtions in a web browser.
 
       Each dancer is represented by a <tt>Dancer</tt> object.  A
@@ -63,10 +67,10 @@ document.addEventListener("DOMContentLoaded", draw, false);
     </p>
 
     <p>
-      The cancers are arranged on a dance floor by placing them in
+      The dancers are arranged on a dance floor by placing them in
       a <tt>Floor</tt> object.  Each Floor object is associated with
-      an initially empty svg element on the web page.  Graphical
-      representations of the dancers will be added to that svg element
+      an initially empty SVG element on the web page.  Graphical
+      representations of the dancers will be added to that SVG element
       when the web page is finished loading.
     </p>
 
