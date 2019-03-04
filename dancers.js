@@ -224,7 +224,7 @@ broken_browser_security_policy_dancer_svg = function() {
     throw new Error("Dancer.svg: floor.svg_id not set.")
   }
   var g = document.createElementNS(svg_uri, "g");
-  g.setAttribute("ID", this.id);
+  g.setAttribute("ID", this.id());
   var dancer_css_class = "";
   var rotate = "rotate(" + (180 - this.direction * 90) + ")";
   var translate = "translate("
