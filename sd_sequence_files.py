@@ -83,6 +83,18 @@ class Graph (object):
         finish_formation()
         return session
 
+    def write_dot_file(self, filepath):
+        with open(filepath, 'w') as f:
+            f.write('strict digraph {\n')
+            for formation in self.formations:
+                f.write('%s ;\n' % formation.dot_id())
+            for c in self.calls:
+                f.write('%s -> %s [label="%s"];\n' % (
+                    c.from_formation.dot_id(),
+                    c.to_formation.dot_id(),
+                    c.text))
+            f.write('}\n')
+
 
 class Formation(object):
     def __init__(self, dancers):
@@ -97,6 +109,10 @@ class Formation(object):
     def __repr__(self):
         return 'Formation(%r)' % self.dancers
         
+    def dot_id(self):
+        assert self.id != None
+        return('f%d' % self.id)
+
     def regrid(self):
         xs = defaultdict(list)
         ys = defaultdict(list)
@@ -271,5 +287,8 @@ class Call (object):
 graph = Graph()
 session = graph.parse_sd_file('c:/Sd/08apr19_Plus_with_pictures.txt')
 for i, s in enumerate(session): print('%3d:  %s' % (i, s))
-
+graph.write_dot_file('chicken_plucker.dot')
 # for i, o in enumerate(sequence): print(i, repr(o))
+
+# dot -ochicken_plucker.svg -Tsvg chicken_plucker.dot
+
