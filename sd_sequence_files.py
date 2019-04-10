@@ -12,38 +12,81 @@ from yattag import Doc
 sd_dancer_re = re.compile('''[1234][BG][><V^]''')
 
 
-def parse_sd_file(filepath):
-    with open(filepath, 'r') as f:
-        return parse_sd_text(f.read())
+class Graph (object):
+    def __init__(self):
+        self.calls = []
+        self.formations = []
+        
+    def intern_formation(self, formation):
+        '''intern_formation returns the one true Formation that matches formation.'''
+        for f in self.formations:
+            if formation == f:
+                return f
+        self.formations.append(formation)
+        formation.id = len(self.formations)
+        return formation
 
+    def intern_call(self, call):
+        '''note_call ensures that we only remember one instance of a Call.'''
+        for c in self.calls:
+            if call == c:
+                return c 
+        self.calls.append(call)
+        return call
 
-def parse_sd_text(text):
-    session = []
-    formation = []
-    def finish_formation():
-        nonlocal formation
-        session.append(Formation(formation).regrid())
+    def parse_sd_file(self, filepath):
+        with open(filepath, 'r') as f:
+            return self.parse_sd_text(f.read())
+
+    def parse_sd_text(self, text):
+        previous_formation = self.intern_formation(squared_set())
+        # session accumulates calls and text so we can review what was
+        # read from the file.  Mostly for debugging.
+        session = []
+        # formation accumumates the dancers of a given formation as we
+        # read each line of input.
         formation = []
-    for line_number, line in enumerate(text.split('\n')):
-        if len(line) == 0:
-            continue
-        dancers = []
-        for dmo in sd_dancer_re.finditer(line):
-            # dmo is a match object
-            dancers.append(Dancer(x=dmo.start(), y=line_number,
-                                  token=line[dmo.start(): dmo.end()]))
-        if len(dancers) > 0:
-            formation.extend(dancers)
-        else:
-            if len(formation) > 0:
-                finish_formation()
-            session.append(line)
-    finish_formation()
-    return session
+        def last_call():
+            warning = 'Warning:'
+            for i in range(len(session) - 1,-1, -1):
+                c = session[i]
+                if isinstance(c, Call):
+                    return None
+                if warning in c:
+                    continue
+                return i
+            return None
+        def finish_formation():
+            nonlocal formation, previous_formation
+            f = self.intern_formation(Formation(formation).regrid())
+            if previous_formation and isinstance(session[-1], str):
+                last_call_index = last_call()
+                if last_call_index:
+                    c = self.intern_call(Call(session[last_call_index], previous_formation, f))
+                session[last_call_index] = c
+            formation = []
+            previous_formation = f
+        for line_number, line in enumerate(text.split('\n')):
+            if len(line) == 0:
+                continue
+            dancers = []
+            for dmo in sd_dancer_re.finditer(line):
+                # dmo is a match object
+                dancers.append(Dancer(x=dmo.start(), y=line_number,
+                                      token=line[dmo.start(): dmo.end()]))
+            if len(dancers) > 0:
+                formation.extend(dancers)
+            else:
+                if len(formation) > 0:
+                    finish_formation()
+                session.append(line)
+        finish_formation()
+        return session
 
 
 class Formation(object):
     def __init__(self, dancers):
+        self.id = None
         self.dancer_size = 20
         self.dancer_spacing = self.dancer_size * 1.3
         self.dancer_nose_radius = 3
@@ -133,7 +176,7 @@ class Dancer(object):
             return False
         if self.couple_number != other.couple_number:
             return False
-        if self.gencer != other.gencer:
+        if self.gender != other.gender:
             return False
         return True
 
@@ -186,6 +229,18 @@ class Dancer(object):
         return doc
 
 
+def squared_set():
+    return Formation([
+        Dancer(x=2, y=4, direction=0, couple_number=1, gender='B'),
+        Dancer(x=3, y=4, direction=0, couple_number=1, gender='G'),
+        Dancer(x=4, y=3, direction=1, couple_number=2, gender='B'),
+        Dancer(x=4, y=2, direction=1, couple_number=2, gender='G'),
+        Dancer(x=1, y=2, direction=2, couple_number=3, gender='B'),
+        Dancer(x=1, y=3, direction=2, couple_number=3, gender='G'),
+        Dancer(x=3, y=1, direction=3, couple_number=4, gender='B'),
+        Dancer(x=2, y=1, direction=3, couple_number=4, gender='G')]).regrid()
+
+
 def xml_text(yattag_doc):
     '''xml_text renders yattag_doc as XML text.'''
     return '\n'.join(yattag_doc.result)
@@ -197,8 +252,24 @@ class Call (object):
         self.from_formation = from_formation
         self.to_formation = to_formation
 
+    def __eq__(self, other):
+        if self.text != other.text:
+            return False
+        if self.from_formation != other.from_formation:
+            return False
+        if self.to_formation != other.to_formation:
+            return False
+        return True
 
-sequence = parse_sd_file('c:/Sd/08apr19_Plus_with_pictures.txt')
-d=sequence[34].dancers[0]
+    def __str__(self):
+        return ('%d -> %s -> %d' % (
+            self.from_formation.id,
+            self.text,
+            self.to_formation.id))
+
+
+graph = Graph()
+session = graph.parse_sd_file('c:/Sd/08apr19_Plus_with_pictures.txt')
+for i, s in enumerate(session): print('%3d:  %s' % (i, s))
 
 # for i, o in enumerate(sequence): print(i, repr(o))
