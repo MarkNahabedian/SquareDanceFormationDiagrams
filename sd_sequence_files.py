@@ -5,11 +5,15 @@
 # http://www.challengedance.org/sd/sd_doc.pdf).
 
 import re
+import os
+import os.path
 from collections import defaultdict
 from yattag import Doc
 
 
 sd_dancer_re = re.compile('''[1234][BG][><V^]''')
+
+SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 
 class Graph (object):
@@ -83,11 +87,27 @@ class Graph (object):
         finish_formation()
         return session
 
-    def write_dot_file(self, filepath):
-        with open(filepath, 'w') as f:
+    def write_dot_file(self, directory):
+        try:
+            os.mkdir(directory)
+        except FileExistsError:
+            pass
+        with open(os.path.join(directory, 'graph.dot'), 'w') as f:
             f.write('strict digraph {\n')
             for formation in self.formations:
-                f.write('%s ;\n' % formation.dot_id())
+                formation_svg_file = '%s.svg' % formation.dot_id()
+                with open(os.path.join(directory, formation_svg_file), 'w') as ff:
+                    doc, tag, text = Doc().tagtext()
+                    with tag('svg',
+                             ('xmlns', SVG_NAMESPACE),
+                             ('viewBox', '0 0 %d %d' % (
+                                 formation.dancer_spacing * (1 + max([d.x for d in formation.dancers])),
+                                 formation.dancer_spacing * (1 + max([d.y for d in formation.dancers])))),
+                             ('width', 100),
+                             ('height', 100)):
+                        doc.asis(xml_text(formation.toSVG()))
+                    ff.write(xml_text(doc))
+                f.write('%s [image="%s"];\n' % (formation.dot_id(), formation_svg_file))
             for c in self.calls:
                 f.write('%s -> %s [label="%s"];\n' % (
                     c.from_formation.dot_id(),
@@ -203,42 +223,44 @@ class Dancer(object):
 
     def toSVG(self):
         doc, tag, text = Doc().tagtext()
+        offset = self.formation.dancer_spacing
         with tag('g',
                  ('class', 
-                  ('couple%d %s' % (
+                  ('dancer couple%d %s' % (
                       self.couple_number,
                       self.__class__.GENDER[self.gender]))),
                  ('transform',
-                  (('rotate(%d)' % (180 - 90 * self.direction)) +
-                   ('translate(%d, %d' % (
-                       self.x * self.formation.dancer_spacing,
-                       self.y * self.formation.dancer_spacing))))):
+                  (('rotate(%d)' % (180 - 90 * self.direction)) + ' ' +
+                   ('translate(%d, %d)' % (
+                       offset + self.x * self.formation.dancer_spacing,
+                       offset + self.y * self.formation.dancer_spacing))))):
             if self.gender == 'B':
-                with tag('rect',
+                doc.stag('rect',
+                         ('fill', 'none'),
+                         ('stroke', 'black'),
                          ('width', self.formation.dancer_size),
                          ('height', self.formation.dancer_size),
                          ('x', self.formation.dancer_size / 2),
-                         ('y', self.formation.dancer_size / 2)):
-                    pass
+                         ('y', self.formation.dancer_size / 2))
             else:
-                with tag('circle',
+                doc.stag('circle',
+                         ('fill', 'none'),
+                         ('stroke', 'black'),
                          ('r', self.formation.dancer_size / 2),
                          ('x', 0),
-                         ('y', 0)):
-                    pass
-                pass
+                         ('y', 0))
             # Nose:
-            with tag('circle',
+            doc.stag('circle',
                      ('class', 'nose'),
                      ('r', self.formation.dancer_nose_radius),
                      ('cx', 0),
                      ('cy', - self.formation.dancer_size / 2),
                      ('stroke', 'none'),
-                     ('fill', 'black')):
-                pass
+                     ('fill', 'black'))
             # Label:
             with tag('text',
                      ('class', 'dancer-label'),
+                     ('stroke', 'black'),
                      ('text-anchor', 'middle'),
                      ('alignment-baseline', 'middle')):
                 text(self.couple_number)
@@ -287,7 +309,7 @@ class Call (object):
 graph = Graph()
 session = graph.parse_sd_file('c:/Sd/08apr19_Plus_with_pictures.txt')
 for i, s in enumerate(session): print('%3d:  %s' % (i, s))
-graph.write_dot_file('chicken_plucker.dot')
+graph.write_dot_file('chicken_plucker')
 # for i, o in enumerate(sequence): print(i, repr(o))
 
 # dot -ochicken_plucker.svg -Tsvg chicken_plucker.dot
