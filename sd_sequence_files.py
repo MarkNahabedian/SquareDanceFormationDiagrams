@@ -161,8 +161,12 @@ class Graph (object):
                     with tag('svg',
                              ('xmlns', SVG_NAMESPACE),
                              ('viewBox', '0 0 %d %d' % (
-                                 formation.dancer_spacing * (1 + max([d.x for d in formation.dancers])),
-                                 formation.dancer_spacing * (1 + max([d.y for d in formation.dancers])))),
+                                 # We add 2 because the left or
+                                 # topmost dancer has position 0 and
+                                 # we also want to add an additional
+                                 # dancer_spacing for margins.
+                                 formation.dancer_spacing * (2 + max([d.x for d in formation.dancers])),
+                                 formation.dancer_spacing * (2 + max([d.y for d in formation.dancers])))),
                              ('width', 100),
                              ('height', 100)):
                         doc.asis(xml_text(formation.toSVG()))
@@ -264,6 +268,7 @@ class Dancer(object):
             self.couple_number, self.gender, self.direction, self.x, self.y))
 
     def __eq__(self, other):
+        # Testing if dancers have equal formations would recurse with Formation.__eq__.
         if self.x != other.x:
             return False
         if self.y != other.y:
@@ -290,18 +295,19 @@ class Dancer(object):
                       self.couple_number,
                       self.__class__.GENDER[self.gender]))),
                  ('transform',
-                  (('rotate(%d)' % (180 - 90 * self.direction)) + ' ' +
-                   ('translate(%d, %d)' % (
+                  (('translate(%d, %d)' % (
                        offset + self.x * self.formation.dancer_spacing,
-                       offset + self.y * self.formation.dancer_spacing))))):
+                       offset + self.y * self.formation.dancer_spacing)) + ' ' +
+                  ('rotate(%d)' % (- 90 * self.direction))))):
+            doc.asis('<!--\n %r -\n-->' % self)
             if self.gender == 'B':
                 doc.stag('rect',
                          ('fill', 'none'),
                          ('stroke', 'black'),
                          ('width', self.formation.dancer_size),
                          ('height', self.formation.dancer_size),
-                         ('x', self.formation.dancer_size / 2),
-                         ('y', self.formation.dancer_size / 2))
+                         ('x', - self.formation.dancer_size / 2),
+                         ('y', - self.formation.dancer_size / 2))
             else:
                 doc.stag('circle',
                          ('fill', 'none'),
@@ -321,6 +327,8 @@ class Dancer(object):
             with tag('text',
                      ('class', 'dancer-label'),
                      ('stroke', 'black'),
+                     ('x', 0),
+                     ('y', self.formation.dancer_nose_radius),
                      ('text-anchor', 'middle'),
                      ('alignment-baseline', 'middle')):
                 text(self.couple_number)
@@ -333,10 +341,10 @@ def squared_set():
         Dancer(x=3, y=4, direction=0, couple_number=1, gender='G'),
         Dancer(x=4, y=3, direction=1, couple_number=2, gender='B'),
         Dancer(x=4, y=2, direction=1, couple_number=2, gender='G'),
-        Dancer(x=1, y=2, direction=2, couple_number=3, gender='B'),
-        Dancer(x=1, y=3, direction=2, couple_number=3, gender='G'),
-        Dancer(x=3, y=1, direction=3, couple_number=4, gender='B'),
-        Dancer(x=2, y=1, direction=3, couple_number=4, gender='G')]).regrid()
+        Dancer(x=3, y=1, direction=2, couple_number=3, gender='B'),
+        Dancer(x=2, y=1, direction=2, couple_number=3, gender='G'),
+        Dancer(x=1, y=2, direction=3, couple_number=4, gender='B'),
+        Dancer(x=1, y=3, direction=3, couple_number=4, gender='G')]).regrid()
 
 
 def xml_text(yattag_doc):
