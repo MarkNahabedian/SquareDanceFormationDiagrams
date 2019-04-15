@@ -4,11 +4,71 @@
 # "sd, A Square Dance Caller's Helper" (see
 # http://www.challengedance.org/sd/sd_doc.pdf).
 
-import re
+import argparse
 import os
 import os.path
+import pickle
+import re
+import subprocess
+import sys
 from collections import defaultdict
 from yattag import Doc
+
+
+parser = argparse.ArgumentParser(description='''
+%(prog)s reads a sequence file as written by BillAckerman's "sd - A Square
+Dance Caller's Assistant" program and produces a graph with square dance
+formations as nodes and square dance calls as edges.
+
+The output directory argument is required.  The directory will be
+created if it does not yet exist.  If the directory contains a
+graph.pickle file it is loaded to initialize the graph.
+
+The graph is also serialized to a GraphVis dot file.
+  ''')
+
+parser.add_argument('-output-directory', dest='output_directory',
+                    type=str, default='.', nargs='?',
+                    help='''The directory in which all output files will be created.
+The directory will be created if it does not yet exist.''')
+parser.add_argument('-sequence_file', dest='sequence_file',
+                    type=str, nargs='?',
+                    help='''The input file as written by sd.''')
+
+SAVED_GRAPH_FILE = 'graph.pickle'
+DOT_FILE_BASE = 'graph'
+PICKLE_PROTOCOL = 2
+
+# Thesze are global so thatthey're easy to get to when run in
+# interactive mode.
+graph = None
+session = None
+
+
+def main():
+    global graph, session
+    args = parser.parse_args()
+    directory = args.output_directory
+    saved_graph = os.path.join(directory, SAVED_GRAPH_FILE)
+    try:
+        with open(saved_graph, 'rb') as f:
+            graph = pickle.Unpickler(f).load()
+    except FileNotFoundError:
+        graph = Graph()
+    session = graph.parse_sd_file(args.sequence_file)
+    for i, s in enumerate(session):
+        print('%3d:  %s' % (i, s))
+    graph.write_dot_file(directory)
+    subprocess.run(['dot',
+                    '-o%s.svg' % DOT_FILE_BASE,
+                    '-Tsvg',
+                    '%s.dot' % DOT_FILE_BASE],
+                   cwd=directory,
+                   stdin=subprocess.DEVNULL,
+                   stdout=sys.stdout,
+                   stderr=sys.stderr)
+    with open(saved_graph, 'wb') as f:
+        pickle.Pickler(f, PICKLE_PROTOCOL).dump(graph)
 
 
 sd_dancer_re = re.compile('''[1234][BG][><V^]''')
@@ -306,11 +366,5 @@ class Call (object):
             self.to_formation.id))
 
 
-graph = Graph()
-session = graph.parse_sd_file('c:/Sd/08apr19_Plus_with_pictures.txt')
-for i, s in enumerate(session): print('%3d:  %s' % (i, s))
-graph.write_dot_file('chicken_plucker')
-# for i, o in enumerate(sequence): print(i, repr(o))
-
-# dot -ochicken_plucker.svg -Tsvg chicken_plucker.dot
-
+if __name__ == '__main__':
+    main()
