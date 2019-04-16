@@ -71,6 +71,8 @@ def main():
         pickle.Pickler(f, PICKLE_PROTOCOL).dump(graph)
 
 
+XML_DECLARATION = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>'''
+
 sd_dancer_re = re.compile('''[1234][BG][><V^]''')
 
 SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
@@ -158,6 +160,7 @@ class Graph (object):
                 formation_svg_file = '%s.svg' % formation.dot_id()
                 with open(os.path.join(directory, formation_svg_file), 'w') as ff:
                     doc, tag, text = Doc().tagtext()
+                    doc.asis(XML_DECLARATION)
                     with tag('svg',
                              ('xmlns', SVG_NAMESPACE),
                              ('viewBox', '0 0 %d %d' % (
