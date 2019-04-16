@@ -174,7 +174,8 @@ class Graph (object):
                              ('height', 100)):
                         doc.asis(xml_text(formation.toSVG()))
                     ff.write(xml_text(doc))
-                f.write('%s [image="%s"];\n' % (formation.dot_id(), formation_svg_file))
+                # TODO add label="" once other issues are resolved.
+                f.write('%s [image="%s", shape=none];\n' % (formation.dot_id(), formation_svg_file))
             for c in self.calls:
                 f.write('%s -> %s [label="%s"];\n' % (
                     c.from_formation.dot_id(),
@@ -187,7 +188,7 @@ class Formation(object):
     def __init__(self, dancers):
         self.id = None
         self.dancer_size = 20
-        self.dancer_spacing = self.dancer_size * 1.3
+        self.dancer_spacing = self.dancer_size * 1.4
         self.dancer_nose_radius = 3
         self.dancers = dancers
         for d in dancers:
