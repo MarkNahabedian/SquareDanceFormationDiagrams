@@ -35,4 +35,7 @@ After each command you can view graph.svg is a web browser to see the graph.
 The file basic_chicken_plucker.svg is the graph after the first two
 commands were run.  all.svg is a graph of all four sequence files.
 
+example/all.png is a screenshot of all.svg rendered in Google Chrome.
+Just looking at all.svg source file from the GitHub web site doesn';t
+follow the links to the formation SVG files.
 
