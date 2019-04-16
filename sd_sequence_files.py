@@ -85,6 +85,7 @@ class Graph (object):
         
     def intern_formation(self, formation):
         '''intern_formation returns the one true Formation that matches formation.'''
+        assert len(formation.dancers) > 0
         for f in self.formations:
             if formation == f:
                 return f
@@ -146,7 +147,8 @@ class Graph (object):
                 if len(formation) > 0:
                     finish_formation()
                 session.append(line)
-        finish_formation()
+        if len(formation) > 0:
+            finish_formation()
         return session
 
     def write_dot_file(self, directory):
