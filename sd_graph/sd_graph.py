@@ -13,27 +13,30 @@ import subprocess
 import sys
 from collections import defaultdict
 from yattag import Doc
+from shape import Shape
 
 
 parser = argparse.ArgumentParser(description='''
-%(prog)s reads a sequence file as written by BillAckerman's "sd - A Square
-Dance Caller's Assistant" program and produces a graph with square dance
-formations as nodes and square dance calls as edges.
+%(prog)s reads sequence files (provided as positional arguments) as
+written by BillAckerman's "sd - A Square Dance Caller's Assistant"
+program and produces a graph with square dance formations as nodes
+and square dance calls as edges.
 
 The output directory argument is required.  The directory will be
 created if it does not yet exist.  If the directory contains a
 graph.pickle file it is loaded to initialize the graph.
 
-The graph is also serialized to a GraphVis dot file.
+The graph is also serialized to a GraphViz dot file.
   ''')
 
 parser.add_argument('-output-directory', dest='output_directory',
                     type=str, default='.', nargs='?',
                     help='''The directory in which all output files will be created.
 The directory will be created if it does not yet exist.''')
-parser.add_argument('-sequence_file', dest='sequence_file',
-                    type=str, nargs='?',
-                    help='''The input file as written by sd.''')
+
+parser.add_argument('sequence_files',
+                    type=str, nargs='*',
+                    help='''The input files as written by sd.''')
 
 SAVED_GRAPH_FILE = 'graph.pickle'
 DOT_FILE_BASE = 'graph'
@@ -55,9 +58,11 @@ def main():
             graph = pickle.Unpickler(f).load()
     except FileNotFoundError:
         graph = Graph()
-    session = graph.parse_sd_file(args.sequence_file)
-    for i, s in enumerate(session):
-        print('%3d:  %s' % (i, s))
+    for sf in args.sequence_files:
+        print('  Reading %s' % sf)
+        session = graph.parse_sd_file(sf)
+        for i, s in enumerate(session):
+            print('%3d:  %s' % (i, s))
     graph.write_dot_file(directory)
     subprocess.run(['dot',
                     '-o%s.svg' % DOT_FILE_BASE,
@@ -90,7 +95,6 @@ class Graph (object):
             if formation == f:
                 return f
         self.formations.append(formation)
-        formation.id = len(self.formations)
         return formation
 
     def intern_call(self, call):
@@ -125,7 +129,7 @@ class Graph (object):
             return None
         def finish_formation():
             nonlocal formation, previous_formation
-            f = self.intern_formation(Formation(formation).regrid())
+            f = self.intern_formation(Formation(formation))
             if previous_formation and isinstance(session[-1], str):
                 last_call_index = last_call()
                 if last_call_index:
@@ -176,8 +180,7 @@ class Graph (object):
                              ('height', 100)):
                         doc.asis(xml_text(formation.toSVG()))
                     ff.write(xml_text(doc))
-                # TODO add label="" once other issues are resolved.
-                f.write('%s [image="%s", shape=none];\n' % (formation.dot_id(), formation_svg_file))
+                f.write('%s [image="%s", shape=none, label=""];\n' % (formation.dot_id(), formation_svg_file))
             for c in self.calls:
                 f.write('%s -> %s [label="%s"];\n' % (
                     c.from_formation.dot_id(),
@@ -188,20 +191,23 @@ class Graph (object):
 
 class Formation(object):
     def __init__(self, dancers):
-        self.id = None
         self.dancer_size = 20
         self.dancer_spacing = self.dancer_size * 1.4
         self.dancer_nose_radius = 3
         self.dancers = dancers
         for d in dancers:
             d.formation = self
+        self.regrid()
+        shapes = Shape.identify(self)
+        assert len(shapes) == 1, 'Got %s for %r' % (shapes, self)
+        self.id = str(shapes[0])
 
     def __repr__(self):
         return 'Formation(%r)' % self.dancers
         
     def dot_id(self):
         assert self.id != None
-        return('f%d' % self.id)
+        return('f%s' % self.id)
 
     def regrid(self):
         xs = defaultdict(list)
@@ -350,7 +356,7 @@ def squared_set():
         Dancer(x=3, y=1, direction=2, couple_number=3, gender='B'),
         Dancer(x=2, y=1, direction=2, couple_number=3, gender='G'),
         Dancer(x=1, y=2, direction=3, couple_number=4, gender='B'),
-        Dancer(x=1, y=3, direction=3, couple_number=4, gender='G')]).regrid()
+        Dancer(x=1, y=3, direction=3, couple_number=4, gender='G')])
 
 
 def xml_text(yattag_doc):
@@ -374,7 +380,7 @@ class Call (object):
         return True
 
     def __str__(self):
-        return ('%d -> %s -> %d' % (
+        return ('%s -> %s -> %s' % (
             self.from_formation.id,
             self.text,
             self.to_formation.id))
