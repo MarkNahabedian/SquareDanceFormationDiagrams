@@ -79,13 +79,13 @@ class VerticalLineOfEight (Shape):
 
 
 class HorizontalLinesOfFour (Shape):
-    FILE_PREFIX = 'h3'
+    FILE_PREFIX = 'h4'
     PATTERN = ((3, 0), (2, 0), (1, 0), (0, 0),
                (0, 1), (1, 1), (2, 1), (3, 1))
 
 
 class VerticalLinesOfFour (Shape):
-    FILE_PREFIX = 'v3'
+    FILE_PREFIX = 'v4'
     PATTERN = ((0, 0), (0, 1), (0, 2), (0, 3),
                (1, 3), (1, 2), (1, 1), (1, 0))
 
