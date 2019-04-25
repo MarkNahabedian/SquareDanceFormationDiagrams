@@ -14,6 +14,7 @@ import sys
 from collections import defaultdict
 from yattag import Doc
 from shape import Shape
+from inline_formations import inline_svg
 
 
 parser = argparse.ArgumentParser(description='''
@@ -72,6 +73,7 @@ def main():
                    stdin=subprocess.DEVNULL,
                    stdout=sys.stdout,
                    stderr=sys.stderr)
+    inline_svg(os.path.join(directory, '%s.svg' % DOT_FILE_BASE), 'unified.svg')
     with open(saved_graph, 'wb') as f:
         pickle.Pickler(f, PICKLE_PROTOCOL).dump(graph)
 
