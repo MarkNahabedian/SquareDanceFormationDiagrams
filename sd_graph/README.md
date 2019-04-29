@@ -35,9 +35,6 @@ python3 sd_graph.py -output-directory=example example/dixie_grand.txt
 After each command you can view graph.svg is a web browser to see the
 graph.
 
-The file basic_chicken_plucker.svg is the graph after the first two
-commands were run. all.svg is a graph of all four sequence files.
-
 The file
 [basic_chicken_plucker.svg](https://raw.githubusercontent.com/MarkNahabedian/SquareDanceFormationDiagrams/master/sd_graph/example/basic_chicken_plucker.svg?sanitize=true)
 is the graph after the first two
