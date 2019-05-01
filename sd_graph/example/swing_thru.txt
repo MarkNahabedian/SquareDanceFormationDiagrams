@@ -1,0 +1,57 @@
+
+Tue Apr 30 23:36:42 2019     Sd38.86:db38.86     Plus
+             swing thru   1
+
+
+HEADS half sashay
+
+ 4B>   3BV   3GV   2G<
+
+ 4G>   1G^   1B^   2B<
+
+
+HEADS star thru
+
+ 4B>   1G<   1B>   2G<
+
+ 4G>   3B<   3G>   2B<
+
+
+swing thru
+
+ 1G>   2G>
+
+ 3B<   2B<
+
+ 4B>   1B>
+
+ 4G<   3G<
+
+
+swing thru
+
+ 3B>   2B>
+
+ 4G<   3G<
+
+ 1G>   2G>
+
+ 4B<   1B<
+
+
+pass to the center
+  Warning:  Rear back from the handhold.
+
+ 4B>   3B>   3G<   2G<
+
+ 4G>   1G>   1B<   2B<
+
+
+CENTERS pass thru
+
+ 4B>   3G<   3B>   2G<
+
+ 4G>   1B<   1G>   2B<
+
+
+left allemande  (at home)
