@@ -4,7 +4,7 @@
 # The notation described by Rich Reel at
 # https://www.all8.com/sd/calling/fasr.htm is agnostic to individual
 # dancer position.  The names of our SVG formation files need names
-# that afe very specific about where each dancer is.
+# that are very specific about where each dancer is.
 
 
 class Shape (object):

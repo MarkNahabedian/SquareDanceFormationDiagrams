@@ -20,7 +20,7 @@ def get_formation_group(dom):
 def inline_svg(graph_file_path, outfile):
     directory = os.path.dirname(graph_file_path)
     graph_dom = xml.dom.minidom.parse(graph_file_path)
-    # Find image elements and replae them with target file contents,
+    # Find image elements and replace them with target file contents,
     # adding appropriate translation and scaling.
     for image in graph_dom.getElementsByTagName('image'):
         parent = image.parentNode
