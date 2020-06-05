@@ -43,7 +43,7 @@ SAVED_GRAPH_FILE = 'graph.pickle'
 DOT_FILE_BASE = 'graph'
 PICKLE_PROTOCOL = 2
 
-# Thesze are global so thatthey're easy to get to when run in
+# These are global so that they're easy to get to when run in
 # interactive mode.
 graph = None
 session = None

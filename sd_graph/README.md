@@ -34,7 +34,7 @@ python3 sd_graph.py -output-directory=example example/dixie_grand.txt
 python3 sd_graph.py -output-directory=example example/swing_thru.txt
 </pre>
 
-After each command you can view graph.svg is a web browser to see the
+After each command you can view graph.svg in a web browser to see the
 graph.
 
 The file
