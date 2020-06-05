@@ -53,14 +53,14 @@ document.addEventListener("DOMContentLoaded", draw, false);
       Each dancer is represented by a <tt>Dancer</tt> object.  A
       dancer is located by an <b>X</b> and a <b>Y</b> coordinate
       expressed in the <b>dancer coordinate system</b>.  The dancer
-      coordinate system is scalled such that dancers who are either
+      coordinate system is scaled such that dancers who are either
       next to or facing each other have distance 1.  X coordinates
       ascend to the right.  Y coordinates ascend downwards.
 
       Each dancer also has a <b>facing direction</b>.  A facing
       direction of <tt>0</tt> has the dancer's back towards the caller
       (like couple #1 in a squared set).  Each increase by <tt>1</tt>
-      in facimng direction rotates the dancer by one wall to their
+      in facing direction rotates the dancer by one wall to their
       left, so a facing direction of <tt>1</tt> would have the dancer
       facing the same wall as couple #2 in a squared set.  Fractional
       coordinates and directions are allowed.
