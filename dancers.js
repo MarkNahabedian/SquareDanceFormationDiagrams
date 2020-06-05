@@ -135,7 +135,7 @@ Dancer.prototype.svg = function() {
   }
   var g = document.createElementNS(svg_uri, "g");
   g.setAttribute("ID", this.id());
-  var dancer_css_class = "";
+  var dancer_css_class = "dancer";
   var rotate = "rotate(" + (180 - this.direction * 90) + ")";
   var translate = "translate("
   	+ (this.x * this.floor.dancer_spacing) + ", "
@@ -150,11 +150,11 @@ Dancer.prototype.svg = function() {
   switch (this.gender) {
     case Dancer.gender.GUY:
       dancer_shape.setAttribute('href', dancer_symbols_base_uri + '#Guy');
-      dancer_css_class += "guy ";
+      dancer_css_class += " guy";
       break;
     case Dancer.gender.GAL:
       dancer_shape.setAttribute('href', dancer_symbols_base_uri + '#Gal');
-      dancer_css_class += "gal ";
+      dancer_css_class += " gal";
       break;
     default:
       dancer_shape.setAttribute('href', dancer_symbols_base_uri + '#Neutral');
@@ -225,7 +225,7 @@ broken_browser_security_policy_dancer_svg = function() {
   }
   var g = document.createElementNS(svg_uri, "g");
   g.setAttribute("ID", this.id());
-  var dancer_css_class = "";
+  var dancer_css_class = "dancer";
   var rotate = "rotate(" + (180 - this.direction * 90) + ")";
   var translate = "translate("
   	+ (this.x * this.floor.dancer_spacing) + ", "
@@ -240,14 +240,14 @@ broken_browser_security_policy_dancer_svg = function() {
       dancer_shape.setAttribute("height", "" + this.floor.dancer_size);
       dancer_shape.setAttribute("x", "" + (- (this.floor.dancer_size / 2)));
       dancer_shape.setAttribute("y", "" + (- (this.floor.dancer_size / 2)));
-      dancer_css_class += "guy ";
+      dancer_css_class += " guy";
       break;
     case Dancer.gender.GAL:
       dancer_shape = document.createElementNS(svg_uri, "circle");
       dancer_shape.setAttribute("r", "" + (this.floor.dancer_size / 2));
       dancer_shape.setAttribute("cx", "0");
       dancer_shape.setAttribute("cy", "0");
-      dancer_css_class += "gal ";
+      dancer_css_class += " gal";
       break;
     default:
       dancer_shape = document.createElementNS(svg_uri, "rect");
