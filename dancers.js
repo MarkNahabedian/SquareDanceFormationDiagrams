@@ -31,7 +31,9 @@ function Floor(dancers) {
   for (i = 0; i < this.dancers.length; i++) {
     var dancer = this.dancers[i];
     dancer.floor = this;
-    dancer.dancer_id = "" + (i + 1); 
+    if (dancer.dancer_id == null) {
+      dancer.dancer_id = "" + (i + 1);
+    }
   }
   // Some default drawing parameters:
   this.dancer_size = 20;
@@ -94,15 +96,18 @@ Floor.prototype.getDancer = function(label) {
 };
 
 // Makes a Dancer.  x and y are floor positions, typically numbers from 1 to 8.
-function Dancer(x, y, direction, label, gender, color) {
+function Dancer(x, y, direction, label,
+                gender=Dancer.gender.NEU,
+                color="white",
+               id=null) {
   // dancer_id is assigned by the Floor constructor.
-  this.dancer_id = null;
+  this.dancer_id = id;
   this.x = x;
   this.y = y;
   this.direction = direction;
   this.label = label || "";
-  this.gender = gender || Dancer.gender.NEU;
-  this.color = color || "white";
+  this.gender = gender;
+  this.color = color;
   // floor is assigned by the Floor constructor.
   this.floor = null;
 };
