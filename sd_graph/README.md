@@ -44,5 +44,5 @@ commands were run.  all.svg is a graph of all four sequence files.
 
 You can specify multiple input files in a single command.
 
-[example/all.svg](https://raw.githubusercontent.com/MarkNahabedian/SquareDanceFormationDiagrams/master/sd_graph/example/all.svg?sanitize=true)
+[example/ChickenPluckerall.svg](https://raw.githubusercontent.com/MarkNahabedian/SquareDanceFormationDiagrams/master/sd_graph/example/ChickenPlucker/all.svg?sanitize=true)
 is the diagram after all five files are processed.
