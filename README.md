@@ -8,7 +8,7 @@ demo.html
 </a>
 for more details.
 
-The sd_graph subdirectory contains a python program that thansforms
+The sd_graph subdirectory contains a python program that transforms
 the sequence files written by Bill Ackerman's "sd, A Square Dance
 Caller's Helper" into a graph with square dance formations as nodes
 and square dance calls as the edges betweeen them.  See the README
